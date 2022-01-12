@@ -11,11 +11,36 @@ if (!$res) die('Query failed <br>');
 
 ?>
 
-<?php include_once './includes/header.php'; ?>
+<?php include_once './includes/start_header.php'; ?>
+<script>
+    jQuery.noConflict();
 
-<form name="form_destroy" action="" method="post">
-    <div class="container py-4">
+    $(document).ready(function() {
+        $("form").submit(function(event) {
+            event.preventDefault();
 
+            var submit = $("#button-submit").val();
+
+            var data = []; 
+            var product_list = $('input[name^="products\["]').serialize();
+            if (product_list.length > 0) {
+                data = product_list;
+                console.log(data);
+            } else {
+                data = [];
+            }
+
+            $(".form-message").load("destroy.php", {
+                submit: submit,
+                data: data,
+            });
+        });
+    });
+</script>
+<?php include_once './includes/end_header.php'; ?>
+
+<div class="container py-4">
+    <form action="destroy.php" method="POST">
         <nav class="navbar navbar-expand-lg navbar-light bg-transparent">
             <h1>Products List</h1>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +53,7 @@ if (!$res) die('Query failed <br>');
                         <a class="btn btn-outline-secondary" href="create.php">Add</a>
                     </li>
                     <li class="nav-item">
-                        <button type="button" class="btn btn-outline-secondary ml-2" onClick="destroy();">Mass Delete</button>
+                        <button id="button-submit" type="submit" name="submit" class="btn btn-outline-secondary ml-2">Mass Delete</button>
                     </li>
                 </ul>
             </div>
@@ -42,6 +67,7 @@ if (!$res) die('Query failed <br>');
 
                     <?php
                     $i = 0;
+                    $n = 0;
                     while ($row = mysqli_fetch_array($res)) {
                     ?>
                         <div class="card border-dark" style="max-width: 18rem;">
@@ -51,14 +77,18 @@ if (!$res) die('Query failed <br>');
                             </div>
                         </div>
                     <?php
+                        $n++;
                         $i++;
                     }
                     ?>
 
                 </div>
+                <div class="form-group">
+                    <p class="form-message"></p>
+                </div>
             </div>
         </div>
-    </div>
-</form> 
+    </form>
+</div>
 
 <?php include_once './includes/footer.php'; ?>

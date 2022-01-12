@@ -1,10 +1,35 @@
 <?php
 
-require_once "../db.php";
+require_once "../db.php"; 
 
-$row_count = count($_POST["products"]);
-for ($i = 0; $i < $row_count; $i++) {
-    mysqli_query($connection, "DELETE FROM products WHERE id='" . $_POST['products'][$i] . "'");
+if (isset($_POST['submit'])) {
+
+    $errorEmpty = false;
+
+    print_r($_POST["data"]);
+    $data = parse_str($_POST["data"], $item);
+
+    if (count($item) > 0) {
+        for ($i = 0; $i < count($item); $i++) {
+            $res = mysqli_query($connection, "DELETE FROM products WHERE id='" . $item[$i] . "'");
+            if (!$res) die('Query failed <br>');
+            // mysqli_close($connection); 
+            // header("Location:index.php");
+        }
+    } else {
+        echo "<span class='text-warning'>Nothing to delete!</span>";
+        $errorEmpty = true;
+    }
+} else {
+    echo "There was an error!";
 }
 
-header("Location:index.php");
+?>
+
+<script>
+    var errorEmpty = "<?php echo $errorEmpty; ?>";
+
+    if (errorEmpty == false) {
+        window.location = 'index.php';
+    }
+</script>

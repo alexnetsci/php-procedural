@@ -1,45 +1,25 @@
 <?php
 
-require_once "../db.php"; 
+require_once "../db.php";
 
-//? Define required input fields and expected errors 
-$sku_error = $name_error = $price_error = "";
-$sku = $name = $price = "";
+if (isset($_POST['submit'])) {
+    $sku = $_POST['sku'];
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $type = $_POST['type'];
+    $size = $weight = $height = $width = $length = "";
 
+    $errorEmpty = false;
 
-function store()
-{
-    global $connection;
-    global $sku_error, $name_error, $price_error;
-    global $sku, $name, $price;
+    if (empty($sku) || empty($name) || empty($price)) {
+        echo "<span class='text-danger'>Please fill in all fields!</span>";
+        $errorEmpty = true;
+    } else {
+        $sku = test_input($_POST['sku']);
+        $name = test_input($_POST['name']);
+        $price = test_input($_POST['price']);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        //* Check sku
-        if (empty($_POST["sku"])) {
-            $sku_error = 'SKU is required';
-        } else {
-            $sku = test_input($_POST["sku"]);
-        }
-
-        //* Check name
-        if (empty($_POST["name"])) {
-            $name_error = 'Name is required';
-        } else {
-            $name = test_input($_POST["name"]);
-        }
-
-        //* Check price
-        if (empty($_POST["price"])) {
-            $price_error = 'Price is required';
-        } else {
-            $price = test_input($_POST["price"]);
-        }
-
-        //? Define nullable input fields
-        $options = $_POST['options'];
-
-        //* Query
-        switch ($options) {
+        switch ($type) {
             case 'dvd':
                 $size = test_input($_POST['size']);
                 $query = "INSERT INTO products(sku,name,price,size) VALUES ('$sku','$name','$price','$size')";
@@ -61,16 +41,13 @@ function store()
                 $query = "INSERT INTO products(sku,name,price) VALUES ('$sku','$name','$price')";
                 break;
         }
-
         $res = mysqli_query($connection, $query);
-
-        // * Check res
         if (!$res) die('Query failed <br>');
-
-        // mysqli_close($connection);
-
-        header("Location:index.php");
+        mysqli_close($connection);
+        // header("Location:index.php");
     }
+} else {
+    echo "There was an error!";
 }
 
 function test_input($data)
@@ -80,3 +57,20 @@ function test_input($data)
     $data = htmlspecialchars($data);
     return $data;
 }
+
+?>
+
+<script>
+    $("#input-sku", "#input-name", "#input-price").removeClass("text-danger");
+
+    var errorEmpty = "<?php echo $errorEmpty; ?>";
+
+    if (errorEmpty == true) {
+        $("#input-sku", "#input-name", "#input-price").addClass("text-danger");
+    }
+
+    if (errorEmpty == false) {
+        $("#input-sku", "#input-name", "#input-price").val("");
+        window.location = 'index.php';
+    }
+</script>
