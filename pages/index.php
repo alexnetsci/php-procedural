@@ -4,7 +4,7 @@ require_once '../db.php';
 
 // ? Define query
 $query = "SELECT * FROM products";
-$res = mysqli_query($connection, $query);
+$res = @mysqli_query($connection, $query);
 
 // * Check res
 if (!$res) die('Query failed <br>');
@@ -19,15 +19,14 @@ if (!$res) die('Query failed <br>');
         $("form").submit(function(event) {
             event.preventDefault();
 
-            var submit = $("#button-submit").val();
+            const submit = $("#button-submit").val();
 
-            var data = []; 
-            var product_list = $('input[name^="products\["]').serialize();
+            let data = [];
+            let product_list = $('input[name^="products\["]').serializeArray();
             if (product_list.length > 0) {
                 data = product_list;
-                console.log(data);
             } else {
-                data = [];
+                data = null;
             }
 
             $(".form-message").load("destroy.php", {
@@ -63,17 +62,36 @@ if (!$res) die('Query failed <br>');
 
         <div class="row py-4">
             <div class="col-sm-12">
-                <div class="card-deck">
+                <div class="row row-cols-1 row-cols-lg-5">
 
                     <?php
                     $i = 0;
                     $n = 0;
                     while ($row = mysqli_fetch_array($res)) {
                     ?>
-                        <div class="card border-dark" style="max-width: 18rem;">
-                            <div class="card-body">
-                                <input type="checkbox" name="products[]" value="<?php echo $row['id'] ?>">
-                                <p class='card-text text-center'><?php echo $row['sku'] ?> <br> <?php echo $row['name'] ?> <br> <?php echo $row['price'] ?> </p>
+                        <div class="col mb-4">
+                            <div class="card h-100 border-dark">
+                                <div class="card-body">
+                                    <input type="checkbox" name="products[]" value="<?php echo $row['id'] ?>"> 
+                                    <p class='card-text text-center'><?php echo $row['sku'] ?> <br> Category: <?php echo strtoupper($row['type']); ?> <br> Product name: <?php echo $row['name'] ?> <br>
+                                        <?php
+                                        switch ($row['type']) {
+                                            case 'dvd':
+                                                echo "Size: " . $row['size'] . "MB";
+                                                break;
+                                            case 'book':
+                                                echo "Weight: " . $row['weight'] . "KG";
+                                                break;
+                                            case 'furniture':
+                                                echo "Height: " . $row['height'] . "MB <br>";
+                                                echo "Width: " . $row['width'] . "MB <br>";
+                                                echo "Length: " . $row['length'] . "MB";
+                                                break;
+                                        }
+                                        ?>
+                                        <br> Price: <?php echo $row['price'] ?>$
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     <?php

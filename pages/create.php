@@ -11,16 +11,81 @@
         $("form").submit(function(event) {
             event.preventDefault();
 
-            var submit = $("#button-submit").val();
-            var sku = $("#input-sku").val();
-            var name = $("#input-name").val();
-            var price = $("#input-price").val();
-            var type = $("#type").val();
-            var size = $("#input-size").val();
-            var weight = $("#input-weight").val();
-            var height = $("#input-height").val();
-            var width = $("#input-width").val();
-            var length = $("#input-length").val();
+            let submit = $("#button-submit").val();
+            let sku = $("#input-sku").val();
+            let name = $("#input-name").val();
+            let price = $("#input-price").val();
+            let type = $("#type").val();
+            let size = $("#input-size").val();
+            let weight = $("#input-weight").val();
+            let height = $("#input-height").val();
+            let width = $("#input-width").val();
+            let length = $("#input-length").val();
+
+            if (!sku) {
+                return $("#input-sku").addClass("border border-danger");
+            } else {
+                $("#input-sku").removeClass("border border-danger");
+                $("#input-sku").addClass("border border-success");
+            }
+
+            if (!name) {
+                return $("#input-name").addClass("border border-danger");
+            } else {
+                $("#input-name").removeClass("border border-danger");
+                $("#input-name").addClass("border border-success");
+            }
+
+            if (!price) {
+                return $("#input-price").addClass("border border-danger");
+            } else {
+                $("#input-price").removeClass("border border-danger");
+                $("#input-price").addClass("border border-success");
+            }
+
+            if (type) {
+                switch (type) {
+                    case 'dvd':
+                        console.log('hit');
+                        if (!size) {
+                            return $("#input-size").addClass("border border-danger");
+                        } else {
+                            $("#input-size").removeClass("border border-danger");
+                            $("#input-size").addClass("border border-success");
+                        }
+                        break;
+
+                    case 'book':
+                        if (!weight) {
+                            return $("#input-weight").addClass("border border-danger");
+                        } else {
+                            $("#input-weight").removeClass("border border-danger");
+                            $("#input-weight").addClass("border border-success");
+                        }
+                        break;
+
+                    case 'furniture':
+                        if (!height) {
+                            return $("#input-height").addClass("border border-danger");
+                        } else {
+                            $("#input-height").removeClass("border border-danger");
+                            $("#input-height").addClass("border border-success");
+                        }
+                        if (!width) {
+                            return $("#input-width").addClass("border border-danger");
+                        } else {
+                            $("#input-width").removeClass("border border-danger");
+                            $("#input-width").addClass("border border-success");
+                        }
+                        if (!length) {
+                            return $("#input-length").addClass("border border-danger");
+                        } else {
+                            $("#input-length").removeClass("border border-danger");
+                            $("#input-length").addClass("border border-success");
+                        }
+                        break;
+                }
+            }
 
             $(".form-message").load("store.php", {
                 submit: submit,
@@ -64,21 +129,21 @@
         <div class="row py-4">
             <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="sku" class="col-lg-2">SKU</label>
-                    <input id="input-sku" type="text" name="sku" class="col-lg-6">
+                    <label for="sku">SKU</label>
+                    <input id="input-sku" type="text" name="sku" class="col-lg-6 form-control">
                 </div>
                 <div class="form-group">
-                    <label for="name" class="col-lg-2">Name</label>
-                    <input id="input-name" type="text" name="name" class="col-lg-6">
+                    <label for="name">Name</label>
+                    <input id="input-name" type="text" name="name" class="col-lg-6 form-control">
                 </div>
                 <div class="form-group">
-                    <label for="price" class="col-lg-2">Price ($)</label>
-                    <input id="input-price" type="text" name="price" class="col-lg-6">
+                    <label for="price">Price ($)</label>
+                    <input id="input-price" type="text" name="price" class="col-lg-6 form-control">
                 </div>
 
                 <div class="form-group mt-5">
-                    <label for="select" class="col-lg-4">Type Switcher</label>
-                    <select id="type" name="type" class="col-lg-4">
+                    <label for="select">Type Switcher</label>
+                    <select id="type" name="type" class="form-control col-lg-4">
                         <option selected>Type Switcher</option>
                         <option value="dvd">DVD</option>
                         <option value="book">Book</option>
@@ -87,22 +152,27 @@
                 </div>
 
                 <div id="dvd" class="options" class="form-group border px-1 py-2 mt-3" style="display: none;">
-                    <label for="size" class="col-lg-5">Size (MB)</label>
-                    <input id="input-size" type="text" name="size" class="col-lg-4">
+                    <label for="size">Size (MB)</label>
+                    <input id="input-size" type="text" name="size" class="col-lg-4 form-control" aria-describedby="inputSizeDescription">
+                    <small id="inputSizeDescription" class="form-text text-muted">Please, provide disc space in MB</small>
                 </div>
                 <div id="book" class="options" class="form-group border px-1 py-2 mt-3" style="display: none;">
-                    <label for="weight" class="col-lg-5">Weight (KG)</label>
-                    <input id="input-weight" type="text" name="weight" class="col-lg-4">
+                    <label for="weight">Weight (KG)</label>
+                    <input id="input-weight" type="text" name="weight" class="col-lg-4 form-control" aria-describedby="inputWeightDescription">
+                    <small id="inputWeightDescription" class="form-text text-muted">Please, provide book weight in KG</small>
                 </div>
                 <div id="furniture" class="options" class="form-group border px-1 py-2 mt-3" style="display: none;">
-                    <label for="height" class="col-lg-5">Height (CM)</label>
-                    <input id="input-height" type="text" name="height" class="col-lg-4">
+                    <label for="height">Height (CM)</label>
+                    <input id="input-height" type="text" name="height" class="col-lg-4 form-control" aria-describedby="inputHeightDescription">
+                    <small id="inputHeightDescription" class="form-text text-muted">Please, provide height in CM</small>
 
-                    <label for="width" class="col-lg-5 mt-3">Width (CM)</label>
-                    <input id="input-width" type="text" name="width" class="col-lg-4">
+                    <label for="width" class="mt-3">Width (CM)</label>
+                    <input id="input-width" type="text" name="width" class="col-lg-4 form-control" aria-describedby="inputWidthDescription">
+                    <small id="inputWidthDescription" class="form-text text-muted">Please, provide width in CM</small>
 
-                    <label for="length" class="col-lg-5 mt-3">Length (CM)</label>
-                    <input id="input-length" type="text" name="length" class="col-lg-4">
+                    <label for="length" class="mt-3">Length (CM)</label>
+                    <input id="input-length" type="text" name="length" class="col-lg-4 form-control" aria-describedby="inputLengthDescription">
+                    <small id="inputLengthDescription" class="form-text text-muted">Please, provide length in CM</small>
                 </div>
                 <div class="form-group">
                     <p class="form-message"></p>

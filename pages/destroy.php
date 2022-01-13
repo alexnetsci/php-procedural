@@ -1,24 +1,24 @@
 <?php
 
-require_once "../db.php"; 
+require_once "../db.php";
 
 if (isset($_POST['submit'])) {
 
+    $data = $_POST["data"];
+
     $errorEmpty = false;
 
-    print_r($_POST["data"]);
-    $data = parse_str($_POST["data"], $item);
-
-    if (count($item) > 0) {
-        for ($i = 0; $i < count($item); $i++) {
-            $res = mysqli_query($connection, "DELETE FROM products WHERE id='" . $item[$i] . "'");
+    if ($data != null && count($data) > 0) {
+        for ($i = 0; $i < count($data); $i++) {
+            $res = @mysqli_query($connection, "DELETE FROM products WHERE id='" . $data[$i]['value'] . "'");
             if (!$res) die('Query failed <br>');
-            // mysqli_close($connection); 
+            // @mysqli_close($connection);
             // header("Location:index.php");
         }
     } else {
         echo "<span class='text-warning'>Nothing to delete!</span>";
         $errorEmpty = true;
+        return;
     }
 } else {
     echo "There was an error!";
@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
 ?>
 
 <script>
-    var errorEmpty = "<?php echo $errorEmpty; ?>";
+    let errorEmpty = "<?php echo $errorEmpty; ?>";
 
     if (errorEmpty == false) {
         window.location = 'index.php';
